@@ -1,9 +1,25 @@
 const { GraphQLServer } = require('graphql-yoga');
 const { Prisma } = require('prisma-binding');
+const { createWriteStream } = require('fs');
 
+const storeUpload = ({ filename, stream }) => {
+	return new Promise((resolve, reject) => {
+		stream
+			.pipe(createWriteStream(filename))
+			.on('finish', () => resolve())
+			.on('error', reject);
+	});
+};
 const resolvers = {
 	Query: {
 		demo: () => 'Welecom to file upload'
+	},
+	Mutation: {
+		uploadFile: async (parent, { file }, ctx, info) => {
+			const { filename, stream } = await file;
+			await storeUpload({ filename, stream });
+			return true;
+		}
 	}
 };
 

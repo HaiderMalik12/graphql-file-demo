@@ -1,5 +1,9 @@
 # import Post from "./generated/prisma.graphql"
+scalar Upload
 
 type Query {
 	demo: String
+}
+type Mutation {
+	uploadFile(file: Upload!): Boolean
 }
